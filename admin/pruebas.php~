@@ -1,0 +1,9 @@
+<?php
+
+require("../taquillas.functions.php");
+require_once("../bbdd.php");
+
+echo imprimir("http://canival.dat.etsit.upm.es/~pmoncada/taquillas/index.php?pag=nueva");
+
+
+?>
