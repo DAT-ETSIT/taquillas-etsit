@@ -8,12 +8,8 @@
 /*
 /***********************************************************************************/
 
-$link = mysql_connect('localhost', 'dbuser', 'dbpassword');
-if (!$link) {
-    die('Could not connect: ' . mysql_error());
-}
-$select_db = mysql_select_db("dbname",$link);
-
+global $mysqli;
+$mysqli = new mysqli("localhost", "c5_dat_etsit", "passw0rd", "c5_dat_taquilla");
 
 if (function_exists('mysql_set_charset') === false) {
     /**
@@ -29,9 +25,9 @@ if (function_exists('mysql_set_charset') === false) {
     function mysql_set_charset($charset, $link_identifier = null)
     {
         if ($link_identifier == null) {
-            return mysql_query('SET CHARACTER SET "'.$charset.'"');
+			return $mysqli->query('SET CHARACTER SET "'.$charset.'"');
         } else {
-            return mysql_query('SET CHARACTER SET "'.$charset.'"', $link_identifier);
+			return $mysqli->query('SET CHARACTER SET "'.$charset.'"', $link_identifier);
         }
     }
 }

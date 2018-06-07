@@ -24,8 +24,8 @@ function isTaquillaAlquilada($numero){
 	
 	$query = "SELECT COUNT(id) as count FROM operaciones WHERE taquilla='$numero' AND curso='$cursoAnterior' AND pagado='1' ";
 	
-	$doQuery = mysql_query($query);	
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);	
+	$fetch = $doQuery->fetch_array();
 	
 	if($fetch['count'] == 1)
 		return true;
@@ -42,8 +42,8 @@ function isTaquillaVacia($taquilla,$curso){
 	
 	$query = "SELECT COUNT(id) as count FROM operaciones WHERE taquilla='$taquilla' AND curso='$curso' ";
 	
-	$doQuery = mysql_query($query);	
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);	
+	$fetch = $doQuery->fetch_array();
 	
 	if($fetch['count'] == 1)
 		return false;
@@ -60,20 +60,20 @@ function isArrendatario($numero,$arrendatario){
 	$operacion = getOperacion($numero,getCursoAnterior());
 	
 	if(checkEmail($arrendatario)){
-		$email = mysql_real_escape_string($arrendatario);
+		$email = $mysqli->real_escape_string($arrendatario);
 		$query = "SELECT id FROM personas WHERE email='$email' AND operacion='$operacion'";
-		$doQuery = mysql_query($query);
+		$doQuery = $mysqli->query($query);
 		
-		if(mysql_num_rows($doQuery) > 0)
+		if($doQuery->num_rows() > 0)
 			return true;		
 	
 	}else if(ctype_digit($arrendatario)){
-		$dni = mysql_real_escape_string($arrendatario);
+		$dni = $mysqli->real_escape_string($arrendatario);
 		$query = "SELECT id FROM personas WHERE dni='$dni' AND operacion='$operacion'";
 				
-		$doQuery = mysql_query($query);
+		$doQuery = $mysqli->query($query);
 		
-		if(mysql_num_rows($doQuery) > 0)
+		if($doQuery->num_rows() > 0)
 			return true;
 	}
 	else{
@@ -88,12 +88,12 @@ function getOperacion($numero,$curso){
 	$curso = intval($curso);
 	
 	$query = "SELECT id FROM operaciones WHERE taquilla='$numero' AND curso='$curso'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	if(mysql_num_rows($doQuery) == 0)
+	if($doQuery->num_rows() == 0)
 		return false;
 	
-	$fetch = mysql_fetch_array($doQuery);
+	$fetch = $doQuery->fetch_array();
 	
 	return intval($fetch['id']);
 }
@@ -102,13 +102,13 @@ function getOperaciones($numero){
 	$numero = intval($numero);
 	
 	$query = "SELECT id,curso,tipo,timestamp FROM operaciones WHERE taquilla='$numero' ORDER BY id DESC";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	if(mysql_num_rows($doQuery) == 0)
+	if($doQuery->num_rows() == 0)
 		return false;
 		
 	
-	while($fetch = mysql_fetch_array($doQuery))
+	while($fetch = $doQuery->fetch_array())
 		$operaciones[] = $fetch;
 		
 	return $operaciones;
@@ -118,9 +118,9 @@ function getOperaciones($numero){
 function isOperacionPagada($operacion){
 	$operacion = intval($operacion);
 	$query = "SELECT pagado FROM operaciones WHERE id='$operacion'";
-	$doQuery= mysql_query($query);
+	$doQuery= $mysqli->query($query);
 	
-	$fetch = mysql_fetch_array($doQuery);
+	$fetch = $doQuery->fetch_array();
 	if(intval($fetch['pagado']) == 1)
 		return true;
 	else
@@ -137,9 +137,9 @@ function checkEmail($email) {
 }
 
 function txn_idExists($txn_id){
-	$txn_id = mysql_real_escape_string($txn_id);
+	$txn_id = $mysqli->real_escape_string($txn_id);
 	$query = "SELECT id FROM operaciones WHERE txn_id='$txn_id'";
-	if(mysql_num_rows(mysql_query($query)) == 0)
+	if($mysqli->query($quey)->num_rows() == 0)
 		return false;
 	else{
 		error_log("Ya existe el txn_id en la base de datos");
@@ -151,7 +151,7 @@ function isValidPersonasId($personasId,$taquilla){
 	$id = intval($personasId);
 	$taquilla = intval($taquilla);
 	$query = "SELECT id FROM json_personas WHERE id='$id' AND taquilla='$taquilla'";
-	if(mysql_num_rows(mysql_query($query)) == 0)
+	if($mysqli->query($quey)->num_rows() == 0)
 		return false;
 	else{
 		error_log("No existe dicho personasId");
@@ -207,9 +207,9 @@ function isCambioIngresoValido($nueva,$antigua,$arrendatario){
 function getArrendatarios($taquilla,$curso){
 	$operacion = getOperacion($taquilla,$curso);	
 	$query = "SELECT * FROM personas WHERE operacion='$operacion'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	$personas = array();
-	while($fetch = mysql_fetch_array($doQuery))
+	while($fetch = $doQuery->fetch_array())
 		$personas[] = $fetch;
 		
 	return $personas;
@@ -218,10 +218,10 @@ function getArrendatarios($taquilla,$curso){
 function getTaquilla($operacion){
 	$operacion = intval($operacion);
 	$query = "SELECT taquilla FROM operaciones WHERE id='$operacion'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	if(!$doQuery)
 		error_log("Error getTaquilla($operacion): $query");
-	$fetch = mysql_fetch_array($doQuery);
+	$fetch = $doQuery->fetch_array();
 	
 	return $fetch['taquilla'];
 }
@@ -255,7 +255,7 @@ function insertaPersonas($personas,$operacion){
 		$query = "INSERT INTO personas (nombre,apellidos,dni,telefono,email,taquilla,operacion)
 			VALUES ('$nombre','$apellidos','$dni','$telefono','$email','$taquilla','$operacion')";
 		mysql_set_charset('utf8'); 
-		$doQuery = mysql_query($query);		
+		$doQuery = $mysqli->query($query);		
 		if(!$doQuery){
 			$correcto = false;
 			error_log("ERROR SQL: $query");
@@ -289,8 +289,8 @@ function renovarPaypal($txn_id,$taquilla,$arrendatario){
 	if(isRenovacionPaypalValida($txn_id,$taquilla,$arrendatario)){
 		$query = "INSERT INTO operaciones (curso,pagado,taquilla,tipo,txn_id)
 			VALUES ('$curso','1','$taquilla','renovacion','$txn_id')";
-		$doQuery = mysql_query($query);
-		$operacion = mysql_insert_id();
+		$doQuery = $mysqli->query($query);
+		$operacion = $mysqli->insert_id();
 		
 		if(!$doQuery){
 			error_log("Error SQL: $query");
@@ -318,8 +318,8 @@ function cambiarPaypal($txn_id,$nueva,$antigua,$arrendatario){
 	if(isCambioPaypalValido($txn_id,$nueva,$antigua,$arrendatario)){
 		$query = "INSERT INTO operaciones (curso,pagado,taquilla,tipo,txn_id)
 			VALUES ('$curso','1','$nueva','cambio','$txn_id')";
-		$doQuery = mysql_query($query);
-		$operacion = mysql_insert_id();
+		$doQuery = $mysqli->query($query);
+		$operacion = $mysqli->insert_id();
 		
 		if(!$doQuery){
 			error_log("Error SQL: $query");
@@ -349,8 +349,8 @@ function nuevaPaypal($txn_id,$taquilla,$personasId){
 	if(isNuevaPaypalValida($txn_id,$taquilla,$personasId)){
 		$query = "INSERT INTO operaciones (curso,pagado,taquilla,tipo,txn_id)
 			VALUES ('$curso','1','$taquilla','nueva','$txn_id')";
-		$doQuery = mysql_query($query);
-		$operacion = mysql_insert_id();
+		$doQuery = $mysqli->query($query);
+		$operacion = $mysqli->insert_id();
 		
 		if(!$doQuery){
 			error_log("Error SQL: $query");
@@ -396,16 +396,16 @@ function get_info_taquilla($taquilla,$curso){
 
 function getZonaTaquilla($taquilla){
 	$query = "SELECT zona FROM taquillas WHERE numero='$taquilla'";
-	$doQuery = mysql_query($query);	
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);	
+	$fetch = $doQuery->fetch_array();
 	return $fetch['zona'];
 }
 
 function getTipoOperacion($operacion){
 	$operacion = intval($operacion);
 	$query = "SELECT tipo FROM operaciones WHERE id='$operacion'";
-	$doQuery = mysql_query($query);	
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);	
+	$fetch = $doQuery->fetch_array();
 	return $fetch['tipo'];
 }
 
@@ -415,9 +415,9 @@ function get_taquillas_alquiladas($curso, $zona = false){
 	if($zona) $query.= " AND t.zona = '".intval($zona)."'"; 
 		
 	$taquillas = array();
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery))
+	while($fetch = $doQuery->fetch_array())
 		$taquillas[] = $fetch;
 		
 	return $taquillas;
@@ -431,9 +431,9 @@ function get_taquillas_no_alquiladas($curso, $zona = false){
 	if($zona) $query.= " AND t.zona = '".intval($zona)."'"; 
 		
 	$taquillas = array();
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery))
+	while($fetch = $doQuery->fetch_array())
 		$taquillas[] = $fetch;
 		
 	return $taquillas;
@@ -445,8 +445,8 @@ function get_taquillas_canceladas($curso){
 	
 	$taquillas = array();
 	
-	$doQuery = mysql_query($query);
-	while($fetch = mysql_fetch_array($doQuery))
+	$doQuery = $mysqli->query($query);
+	while($fetch = $doQuery->fetch_array())
 		$taquillas[]['taquilla'] = $fetch['taquilla'];
 	
 		
@@ -461,9 +461,9 @@ function get_taquillas_alquilables($curso, $zona = false){
 	if($zona) $query.= " AND t.zona = '".intval($zona)."'";
 			
 	$taquillas = array();
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery))
+	while($fetch = $doQuery->fetch_array())
 		$taquillas[] = $fetch;
 		
 	return $taquillas;
@@ -483,9 +483,9 @@ function get_taquillas_no_renovadas($curso, $zona = false){
 	if($zona) $query.= " AND t.zona = '".intval($zona)."'";
 	
 	$taquillas = array();
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery))
+	while($fetch = $doQuery->fetch_array())
 		$taquillas[] = $fetch;
 		
 	return $taquillas;
@@ -494,9 +494,9 @@ function get_taquillas_no_renovadas($curso, $zona = false){
 function get_info_operacion($operacion){
 	$operacion = intval($operacion);
 	$query = "SELECT * FROM operaciones WHERE id='$operacion'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	return mysql_fetch_array($doQuery);
+	return $doQuery->fetch_array();
 }
 function renovarIngreso($taquilla,$arrendatario){
 
@@ -506,8 +506,8 @@ function renovarIngreso($taquilla,$arrendatario){
 	
 		$query = "INSERT INTO operaciones (curso,pagado,taquilla,tipo,txn_id)
 			VALUES ('$curso','0','$taquilla','renovacion','Ingreso_$taquilla')";
-		$doQuery = mysql_query($query);
-		$operacion = mysql_insert_id();
+		$doQuery = $mysqli->query($query);
+		$operacion = $mysqli->insert_id();
 		
 		if(!$doQuery){
 			error_log("Error SQL: $query");
@@ -536,8 +536,8 @@ function cambioIngreso($nueva,$antigua,$arrendatario){
 	
 		$query = "INSERT INTO operaciones (curso,pagado,taquilla,tipo,txn_id)
 			VALUES ('$curso','0','$nueva','cambio','Ingreso_$nueva')";
-		$doQuery = mysql_query($query);
-		$operacion = mysql_insert_id();
+		$doQuery = $mysqli->query($query);
+		$operacion = $mysqli->insert_id();
 		
 		if(!$doQuery){
 			error_log("Error SQL: $query");
@@ -567,8 +567,8 @@ function nuevaIngreso($taquilla,$personasId){
 	
 		$query = "INSERT INTO operaciones (curso,pagado,taquilla,tipo,txn_id)
 			VALUES ('$curso','0','$taquilla','nueva','Nueva_$taquilla')";
-		$doQuery = mysql_query($query);
-		$operacion = mysql_insert_id();
+		$doQuery = $mysqli->query($query);
+		$operacion = $mysqli->insert_id();
 		
 		if(!$doQuery){
 			error_log("Error SQL: $query");
@@ -598,7 +598,7 @@ function registrarCambio($nueva,$antigua,$operacion, $curso){
 	
 	$query = "INSERT INTO cambios (nueva,antigua,operacion,curso) VALUES ('$nueva','$antigua','$operacion','$curso')";
 	
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
 	return $doQuery;
 	
@@ -606,9 +606,9 @@ function registrarCambio($nueva,$antigua,$operacion, $curso){
 
 function get_cursos(){
 	$query = "SELECT DISTINCT curso FROM `operaciones` ORDER BY curso DESC";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	$cursos = array();
-	while($fetch = mysql_fetch_array($doQuery)){
+	while($fetch = $doQuery->fetch_array()){
 		$cursos[] = $fetch['curso'];
 	}
 	return $cursos;
@@ -617,15 +617,15 @@ function get_cursos(){
 function insert_json_personas($personas,$taquilla){
 	$taquilla = intval($taquilla);
 	$query = "INSERT INTO json_personas (personas,taquilla) VALUES ('$personas','$taquilla')";
-	$doQuery = mysql_query($query);
-	return mysql_insert_id();
+	$doQuery = $mysqli->query($query);
+	return $mysqli->insert_id();
 }
 
 function get_json_personas($id){
 	$id = intval($id);
 	$query = "SELECT personas FROM json_personas WHERE id='$id'";
-	$doQuery = mysql_query($query);
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);
+	$fetch = $doQuery->fetch_array();
 	return $fetch['personas'];
 }
 
@@ -660,11 +660,11 @@ function isTaquillaBloqueada($taquilla){
 	$taquilla = intval($taquilla);
 	$time = time();
 	$query = "SELECT time FROM bloqueadas WHERE taquilla='$taquilla' AND ";
-	$doQuery = mysql_query($query);
-	if(mysql_num_rows($doQuery) == 0)
+	$doQuery = $mysqli->query($query);
+	if($doQuery->num_rows() == 0)
 		return false;
 	else{
-		$fetch = mysql_fetch_array($doQuery);
+		$fetch = $doQuery->fetch_array();
 		if( ($fetch['time'] + 60*30) < $time)
 			return false;
 		else
@@ -681,10 +681,10 @@ function bloquearTaquilla($taquilla){
 	if(!isTaquillaBloqueada($taquilla)){
 	
 		$eliminar = "DELETE FROM bloqueadas WHERE ip='$ip'";
-		$doEliminar = mysql_query($eliminar);
+		$doEliminar = $mysqli->query($eliminar);
 		
 		$query = "INSERT INTO bloqueadas (taquilla,time,ip) VALUES ('$taquilla','$time','$ip')";
-		$doQuery = mysql_query($query);
+		$doQuery = $mysqli->query($query);
 		if($doQuery)
 			return true;
 		else
@@ -697,9 +697,9 @@ function bloquearTaquilla($taquilla){
 
 function isTaquillaCambiada($antigua,$curso){
 	$query = "SELECT id FROM cambios WHERE antigua='$antigua' AND curso='$curso'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	if(mysql_num_rows($doQuery) == 0)
+	if($doQuery->num_rows() == 0)
 		return false;
 	else
 		return true;
@@ -707,7 +707,7 @@ function isTaquillaCambiada($antigua,$curso){
 
 function insertarCambio($nueva,$antigua,$curso,$operacion){
 	$query = "INSERT INTO cambios (nueva,antigua,curso,operacion) VALUES ('$nueva','$antigua','$curso','$operacion')";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
 	if($doQuery)
 		return false;
@@ -721,7 +721,7 @@ function cancelarTaquilla($taquilla,$arrendatario){
 		$curso = getCursoActual();
 		$taquilla = intval($taquilla);
 		$query = "INSERT INTO cancelaciones (taquilla,curso) VALUES ('$taquilla','$curso')";
-		$doQuery = mysql_query($query);
+		$doQuery = $mysqli->query($query);
 		if($doQuery)
 			return true;
 		else
@@ -780,8 +780,8 @@ function pagarOperacion($operacion){
 	$query = "UPDATE operaciones SET pagado='1' WHERE id='$operacion'";	
 	$query2 = "INSERT INTO pagos_manuales (operacion,admin) VALUES ('$operacion','$admin')";
 	
-	$doQuery = mysql_query($query);
-	$doQuery2 = mysql_query($query2);
+	$doQuery = $mysqli->query($query);
+	$doQuery2 = $mysqli->query($query2);
 	
 	return ($doQuery && $doQuery2);	
 
@@ -791,8 +791,8 @@ function isTaquillaCancelada($taquilla,$curso){
 	$taquilla = intval($taquilla);
 	$curso = intval($curso);
 	$query = "SELECT id FROM cancelaciones WHERE taquilla='$taquilla' AND curso='$curso'";
-	$doQuery = mysql_query($query);
-	return (mysql_num_rows($doQuery) > 0);
+	$doQuery = $mysqli->query($query);
+	return ($doQuery->num_rows() > 0);
 	
 }
 
@@ -808,8 +808,8 @@ function getRazonNoRenovada($taquilla,$curso){
 
 function getNombreZona($id){
 	$query = "SELECT nombre FROM zonas WHERE id='$id'";
-	$doQuery = mysql_query($query);	
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);	
+	$fetch = $doQuery->fetch_array();
 	return utf8_encode($fetch['nombre']);
 }
 
@@ -821,7 +821,7 @@ function insertarComentario($taquilla,$curso,$comentario,$persistente){
 	$persistente = intval($persistente);
 	
 	$query = "INSERT INTO comentarios (taquilla,admin,curso,comentario,persistente) VALUES ('$taquilla','$admin','$curso','$comentario','$persistente')";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	return $doQuery;	
 }
 
@@ -830,12 +830,12 @@ function getComentarios($taquilla,$curso){
 	$curso = intval($curso);
 	
 	$query = "SELECT admin, timestamp, comentario, persistente FROM comentarios WHERE taquilla='$taquilla' AND ( (curso='$curso') OR (persistente='1') )";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	if(mysql_num_rows($doQuery) == 0) return false;
+	if($doQuery->num_rows() == 0) return false;
 	
 	$i = 0;
-	while($fetch = mysql_fetch_array($doQuery)){
+	while($fetch = $doQuery->fetch_array()){
 		$comentarios[$i]['admin'] = $fetch['admin'];
 		$comentarios[$i]['timestamp'] = $fetch['timestamp'];
 		$comentarios[$i]['comentario'] = $fetch['comentario'];
@@ -848,8 +848,8 @@ function getComentarios($taquilla,$curso){
 
 function getZonas(){
 	$query = "SELECT id FROM zonas";
-	$doQuery = mysql_query($query);
-	while($fetch = mysql_fetch_array($doQuery)){
+	$doQuery = $mysqli->query($query);
+	while($fetch = $doQuery->fetch_array()){
 		$zona[] = $fetch['id'];
 	}
 	return $zona;
@@ -858,8 +858,8 @@ function getZonas(){
 function getCambioOrigen($operacion){
 	$operacion = intval($operacion);
 	$query = "SELECT antigua FROM cambios WHERE operacion='$operacion'";
-	$doQuery = mysql_query($query);
-	$fetch = mysql_fetch_array($doQuery);
+	$doQuery = $mysqli->query($query);
+	$fetch = $doQuery->fetch_array();
 	
 	return $fetch['antigua'];
 
@@ -868,9 +868,9 @@ function getCambioOrigen($operacion){
 function getTareasPendientes(){
 	$curso = getCursoActual();
 	$query = "SELECT * FROM operaciones WHERE (tipo = 'cambio' OR tipo = 'nueva') AND tarea_realizada = '0' AND curso='$curso' ORDER BY pagado DESC, timestamp ASC";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery)){
+	while($fetch = $doQuery->fetch_array()){
 		$operaciones[] = $fetch;
 	}
 	return $operaciones;
@@ -882,7 +882,7 @@ function setTareaRealizada($operacion,$estado){
 	$operacion = intval($operacion);
 	
 	$query = "UPDATE operaciones SET tarea_realizada='$estado' WHERE id='$operacion'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	return $doQuery;
 	
 }
@@ -896,9 +896,9 @@ function getCancelaciones($fianza = false){
 	$curso = getCursoActual();
 	$query = "SELECT id, taquilla, curso, fianza_devuelta FROM cancelaciones WHERE curso='$curso'";
 	if($fianza) $query .= " AND fianza_devuelta='0'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery)){
+	while($fetch = $doQuery->fetch_array()){
 		$cancelaciones[] = $fetch;
 	}
 	return $cancelaciones;
@@ -907,8 +907,8 @@ function getCancelaciones($fianza = false){
 
 function getCancelacion($cancelacion){	
 	$query = "SELECT * FROM cancelaciones WHERE id='$cancelacion'";
-	$doQuery = mysql_query($query);	
-	return mysql_fetch_array($doQuery);	
+	$doQuery = $mysqli->query($query);	
+	return $doQuery->fetch_array();	
 }
 
 function countCancelaciones(){
@@ -921,7 +921,7 @@ function setFianzaDevuelta($cancelacion, $quien){
 	$time = time();
 	
 	$query = "UPDATE cancelaciones SET fianza_devuelta='1', quien_recoge='$quien', hora_recogida='$time' WHERE id='$cancelacion'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	return $doQuery;
 	
 }
@@ -930,9 +930,9 @@ function getCambios($curso){
 	$curso = intval($curso);
 	
 	$query = "SELECT taquilla FROM operaciones WHERE tipo='cambio' AND curso='$curso'";
-	$doQuery = mysql_query($query);
+	$doQuery = $mysqli->query($query);
 	
-	while($fetch = mysql_fetch_array($doQuery)){
+	while($fetch = $doQuery->fetch_array()){
 		$taquillas[] = $fetch;
 	}
 	return $taquillas;
