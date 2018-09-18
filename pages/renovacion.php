@@ -26,7 +26,7 @@ if($params->renovaciones == false) die("Esta acción no está disponible");
 $paso = intval($_POST['paso']);
 
 /**
-/* Manejador de parámetros para ver en que estado de la renovación vamos 
+/* Manejador de parámetros para ver en que estado de la renovación vamos
  */
 if($paso == 0)
 	renovacion_paso1();
@@ -40,17 +40,17 @@ else if($paso == 6)
 	renovacion_ingreso($_POST['taquilla'],$_POST['arrendatario']);
 else
 	renovacion_paso1();
-	
-	
-	
-	
+
+
+
+
 /**
 /* Paso uno: Formulario para introducir número de taquilla a renovar
  */
 
 function renovacion_paso1(){
 
-echo '<div data-role="content">	
+echo '<div data-role="content">
 	<form action="index.php?pag=renovacion" method="post">
 		<div data-role="fieldcontain">
 			<label for="numero">Número de taquilla:</label>
@@ -58,7 +58,7 @@ echo '<div data-role="content">
 		</div>
 		<input type="hidden" name="paso" id="paso" value="2" />
 		<input type="submit" name="comprobar" id="comprobar" value="Comprobar taquilla" />
-		
+
 	</form>
 </div><!-- /content -->';
 
@@ -86,7 +86,7 @@ function renovacion_paso2($numero){
 /* @params $numero Numero de la taquilla a renovar
 */
 function renovacion_paso3($numero){
-	echo '<div data-role="content">	
+	echo '<div data-role="content">
 	<form action="index.php?pag=renovacion" method="post">
 		<div data-role="fieldcontain">
 			<label for="numero">Introducir email o DNI(solo numeros) de alguno de los arrendatarios</label>
@@ -95,7 +95,7 @@ function renovacion_paso3($numero){
 		<input type="hidden" name="paso" id="paso" value="4" />
 		<input type="hidden" name="numero" id="numero" value="'.$numero.'" />
 		<input type="submit" name="comprobar" id="comprobar" value="Comprobar arrendatarios" />
-		
+
 	</form>
 </div><!-- /content -->';
 
@@ -121,21 +121,21 @@ function renovacion_paso4($numero,$arrendatario){
 
 function renovacion_paso5($numero,$importe,$arrendatario,$online){
 	require_once("params.php");
-	
+
 	$params = new TaquillasParams();
-	
+
 	if($online == "online")
 		$online = true;
 	else
 		$online = false;
-		
+
 	if($online){
 		require_once("logos.php");
 		aviso("Ahora vas a visitar el sitio de Paypal, donde puedes pagar con tu <b>cuenta de paypal</b> o con tu <b>tarjeta de crédito</b>. <br/> No es necesario que tengas cuenta de paypal, simpemente pulsa en \"¿No dispone de una cuenta paypal?\".");
 		paypal_logo();
 		echo '
 		<div data-role="content">
-		<form name="_xclick" action="'.$params->paypalUrl.'" 
+		<form name="_xclick" action="'.$params->paypalUrl.'"
     method="post">
     <input type="hidden" name="cmd" value="_xclick">
     <input type="hidden" name="business" value="'.$params->paypalReceiverEmail.'">
@@ -143,10 +143,10 @@ function renovacion_paso5($numero,$importe,$arrendatario,$online){
     <input type="hidden" name="item_name" value="Renovacion">
 	<input type="hidden" name="item_number" value="'.$numero.'">
     <input type="hidden" name="amount" value="'.$params->precioPaypalRenovacion.'">
-    <input type="hidden" name="return" value="http://canival.dat.etsit.upm.es/~pmoncada/taquillas/paypal/ok.php">
-    <input type="hidden" name="notify_url" value="http://canival.dat.etsit.upm.es/~pmoncada/taquillas/paypal/paypal.php?type=renovacion&arrendatario='.$arrendatario.'">
+    <input type="hidden" name="return" value="https://dat.etsit.upm.es/taquillasapp//paypal/ok.php">
+    <input type="hidden" name="notify_url" value="https://dat.etsit.upm.es/taquillasapp/paypal/paypal.php?type=renovacion&arrendatario='.$arrendatario.'">
     <input type="submit" value="Pagar ahora con PayPal"  border="0" name="submit" alt="Make payments with PayPal">
-</form></div>';	
+</form></div>';
 	aviso("Imagen de muestra del sitio de Paypal");
 	echo '<center><img src="images/paypal.png" /></center>';
 	}else{
@@ -154,7 +154,7 @@ function renovacion_paso5($numero,$importe,$arrendatario,$online){
 			<div data-role="header" data-theme="e" class="ui-header ui-bar-e" role="banner">
 				<h1 class="ui-title" role="heading" aria-level="1">Indicaciones para pago con ingreso en cuenta bancaria</h1>
 			</div>
-			
+
 			<div class="ui-body ui-body-e">
 				<ul>
 					<li>Se ha de hacer un ingreso en la cuenta '.$params->cco.'</li>
@@ -166,8 +166,8 @@ function renovacion_paso5($numero,$importe,$arrendatario,$online){
 			</div>
 
 		</div>';
-		
-	
+
+
 	}
 
 }
@@ -178,22 +178,22 @@ function renovacion_paso5($numero,$importe,$arrendatario,$online){
 /* @params $arrendatario DNI o email de alguno de los arrendatarios de la taquilla
 */
 function muestraPago($numero,$importe,$arrendatario){
-	
+
 	require_once("params.php");
 	$params = new TaquillasParams();
 	$importe = $params->precioRenovacion;
-	
-	echo '<div data-role="content">	
+
+	echo '<div data-role="content">
 	<h1>Importe: '.$importe.' EUR</h1>
-	
+
 	<form action="index.php?pag=renovacion" method="post">
 		<fieldset data-role="controlgroup">
 	<legend>Seleccionar forma de pago:</legend>
      	<input type="radio" name="formapago" id="online" value="online" checked="checked" />
      	<label for="online">On-line</label>
-		
+
      	<input type="radio" name="formapago" id="ingreso" value="ingreso"  />
-     	<label for="ingreso">Ingreso bancario</label>    	
+     	<label for="ingreso">Ingreso bancario</label>
 	</fieldset>
 	<input type="hidden" name="paso" id="paso" value="5" />
 
@@ -210,25 +210,25 @@ function renovacion_ingreso($taquilla,$arrendatario){
 	$taquilla = intval($taquilla);
 	require_once("params.php");
 	$params = new TaquillasParams();
-	
+
 	if(renovarIngreso($taquilla,$arrendatario)){
 		$operacion = getOperacion($taquilla,getCursoActual());
 		$mensaje = $params->instruccionesIngreso."<h2>Importe a ingresar: ".$params->precioRenovacion." EUR</h2>
 		<h2>Número de operación: $operacion</h2><h2>Número de taquilla (indicar en el ingreso): $taquilla</h2>";
-		
+
 		mandarCorreos($taquilla,getCursoActual(),"[TAQUILLAS DAT] Reserva de renovación de taquilla $taquilla",$mensaje);
 		echo '<div data-role="content">
 			<div data-role="header" data-theme="b" class="ui-header ui-bar-b" role="banner">
 				<h1 class="ui-title" role="heading" aria-level="1">Reserva realizada</h1>
 			</div>
-			
+
 			<div class="ui-body ui-body-d">
 				<p>Tu reserva para la taquilla '.$taquilla.' ha quedado realizada</p>
 				<p>Para terminar el proceso de renovación realiza el ingreso de acuerdo con las instrucciones que recibirás por email</p>
 			</div>
 
 		</div>';
-	
+
 	}else{
 		aviso("Error, ponte en contacto con taquillas@dat.etsit.upm.es");
 	}

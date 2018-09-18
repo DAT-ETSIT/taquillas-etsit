@@ -27,7 +27,7 @@ if($params->cambios == false) die("Esta acción no está disponible");
 $paso = intval($_POST['paso']);
 
 /**
-/* Manejador de parámetros para ver en que estado de la renovación vamos 
+/* Manejador de parámetros para ver en que estado de la renovación vamos
  */
 if($paso == 0)
 	renovacion_paso1();
@@ -126,7 +126,7 @@ function seleccionar_nueva_taquilla($antigua,$arrendatario){
 
 	echo '<div data-role="content">';
 	echo '<div class="ui-body ui-body-e">
-				<p>A continuación se muestran las taquillas aún disponibles. 
+				<p>A continuación se muestran las taquillas aún disponibles.
 				Una vez seleccionada dispondrá de 30 minutos para terminar la reserva durante el cual se le reservará el número de taquilla</p>
 			</div>';
 	echo '<form action="index.php?pag=cambio" method="post">';
@@ -194,7 +194,7 @@ function renovacion_paso5($nueva,$antigua,$importe,$arrendatario,$online){
 	if($online){
 		echo '
 		<div data-role="content">
-		<form name="_xclick" action="'.$params->paypalUrl.'" 
+		<form name="_xclick" action="'.$params->paypalUrl.'"
     method="post">
     <input type="hidden" name="cmd" value="_xclick">
     <input type="hidden" name="business" value="'.$params->paypalReceiverEmail.'">
@@ -202,8 +202,8 @@ function renovacion_paso5($nueva,$antigua,$importe,$arrendatario,$online){
     <input type="hidden" name="item_name" value="Cambio">
 	<input type="hidden" name="item_number" value="'.$nueva.'">
     <input type="hidden" name="amount" value="'.$params->precioPaypalCambio.'">
-    <input type="hidden" name="return" value="http://canival.dat.etsit.upm.es/~pmoncada/taquillas/paypal/ok.php">
-    <input type="hidden" name="notify_url" value="http://canival.dat.etsit.upm.es/~pmoncada/taquillas/paypal/paypal.php?type=cambio&arrendatario='.$arrendatario.'&an='.$antigua.'">
+    <input type="hidden" name="return" value="http://dat.etsit.upm.es/taquillasapp/paypal/ok.php">
+    <input type="hidden" name="notify_url" value="http://dat.etsit.upm.es/taquillasapp/paypal/paypal.php?type=cambio&arrendatario='.$arrendatario.'&an='.$antigua.'">
     <input type="submit" value="Pagar ahora con PayPal"  border="0" name="submit" alt="Make payments with PayPal">
 </form></div>';	
 	}else{

@@ -1,4 +1,6 @@
 <?php
+// tell PHP to log errors to ipn_errors.log in this directory
+
 
 /***********************************************************************************
 /*
@@ -11,6 +13,7 @@
 
 ini_set('log_errors', true);
 ini_set('error_log', dirname(__FILE__).'/ipn_errors.log');
+
 
 
 require_once("../bbdd.php");
@@ -57,12 +60,12 @@ try {
 if ($verified) {
 
     $errmsg = '';   // stores errors from fraud checks
-    
-    // 1. Make sure the payment status is "Completed" 
-    if ($_POST['payment_status'] != 'Completed') { 
+
+    // 1. Make sure the payment status is "Completed"
+    if ($_POST['payment_status'] != 'Completed') {
         // simply ignore any IPN that is not completed
 		error_log("Pago no completado: ".$_POST['payment_status']. "Pending Reason: ".$_POST['pending_reason']);
-        exit(0); 
+        exit(0);
     }
 
     // 2. Make sure seller email matches your primary account email.
@@ -72,13 +75,13 @@ if ($verified) {
 		$errmsg .= "Should be:";
 		$errmsg .= $params->paypalReveiverEmail."\n";
     }
-    
+
     // 3. Make sure the amount(s) paid match
     if ($_POST['mc_gross'] != $precio) {
         $errmsg .= "'mc_gross' does not match: ";
         $errmsg .= $_POST['mc_gross']."\n";
     }
-    
+
     // 4. Make sure the currency code matches
     if ($_POST['mc_currency'] != 'EUR') {
         $errmsg .= "'mc_currency' does not match: ";
@@ -88,14 +91,14 @@ if ($verified) {
 	
 
     // TODO: Check for duplicate txn_id
-    
+
     if (!empty($errmsg)) {
-    
+
         // manually investigate errors from the fraud checking
         $body = "IPN failed fraud checks: \n$errmsg\n\n";
         $body .= $listener->getTextReport();
         mail('taquillas@dat.etsit.upm.es', 'IPN Fraud Warning', $body);
-        
+
     } else {
 		//mail('taquillas@dat.etsit.upm.es', 'Valid IPN', $listener->getTextReport());
 		
@@ -135,7 +138,7 @@ if ($verified) {
 		}
         // TODO: process order here
     }
-    
+
 } else {
     // manually investigate the invalid IPN
     mail('taquillas@dat.etsit.upm.es', 'Invalid IPN', $listener->getTextReport());

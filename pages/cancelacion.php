@@ -26,7 +26,7 @@ if($params->cancelaciones == false) die(aviso("Esta acción no está disponible"
 $paso = intval($_POST['paso']);
 
 /**
-/* Manejador de parámetros para ver en que estado de la renovación vamos 
+/* Manejador de parámetros para ver en que estado de la renovación vamos
  */
 if($paso == 0)
 	renovacion_paso1();
@@ -38,17 +38,17 @@ else if($paso == 5)
 	terminar_cancelacion($_POST['numero'],$_POST['arrendatario']);
 else
 	renovacion_paso1();
-	
-	
-	
-	
+
+
+
+
 /**
 /* Paso uno: Formulario para introducir número de taquilla a renovar
  */
 
 function renovacion_paso1(){
 
-echo '<div data-role="content">	
+echo '<div data-role="content">
 	<form action="index.php?pag=cancelacion" method="post">
 		<div data-role="fieldcontain">
 			<label for="numero">Número de taquilla:</label>
@@ -56,7 +56,7 @@ echo '<div data-role="content">
 		</div>
 		<input type="hidden" name="paso" id="paso" value="2" />
 		<input type="submit" name="comprobar" id="comprobar" value="Comprobar taquilla" />
-		
+
 	</form>
 </div><!-- /content -->';
 
@@ -84,7 +84,7 @@ function renovacion_paso2($numero){
 /* @params $numero Numero de la taquilla a renovar
 */
 function renovacion_paso3($numero){
-	echo '<div data-role="content">	
+	echo '<div data-role="content">
 	<form action="index.php?pag=cancelacion" method="post">
 		<div data-role="fieldcontain">
 			<label for="numero">Introducir email o DNI(solo numeros) de alguno de los arrendatarios</label>
@@ -93,14 +93,14 @@ function renovacion_paso3($numero){
 		<input type="hidden" name="paso" id="paso" value="4" />
 		<input type="hidden" name="numero" id="numero" value="'.$numero.'" />
 		<input type="submit" name="comprobar" id="comprobar" value="Comprobar arrendatarios" />
-		
+
 	</form>
 </div><!-- /content -->';
 
 }
 
 function confirmar_cancelacion($numero,$arrendatario){
-	echo '<div data-role="content">	
+	echo '<div data-role="content">
 	<form action="index.php?pag=cancelacion" method="post">';
 	echo '<div class="ui-body ui-body-e">
 		  <p>¿Está seguro de que desea pedir cancelación de la taquilla <b>'.$numero.'</b>?</p>
@@ -125,17 +125,17 @@ function comprobar_arrendatarios($numero,$arrendatario){
 
 function terminar_cancelacion($numero,$arrendatario){
 	$cancelar = cancelarTaquilla($numero,$arrendatario);
-	
+
 	if($cancelar){
-	
-		$mensaje = "<p>Gracias por haber confirmado que no vas a seguir ocupanndo la taquilla <b>$numero</b> durante este curso<p>";
+
+		$mensaje = "<p>Gracias por haber confirmado que no vas a seguir ocupando la taquilla <b>$numero</b> durante este curso<p>";
 		$mensaje .= "<p>Te agradeceríamos que dejaras limpia lo antes posible la taquilla, de lo contrario la vaciaremos nosotros y todas tus pertenencias las guardaremos temporalmente en DAT</p>";
-		$mensaje .= "<p>Puedes pasar a recoger la fianza de tu taquilla cuando se indiquen los plazos. Si fuera a venir alguien que no es arrendatario de la taquilla, por favor,
-		haznos llegar una autorización indicando nombre, apellidos y número de identificación (DNI o pasaporte) respondiendo a este correo</p>";
+		$mensaje .= "<p>Puedes pasar a recoger la fianza de tu taquilla a partir del jueves 18 de septiembre hasta el lunes 29 de septiembre de 13h a 14h. Si fuera a venir alguien que no es arrendatario de la taquilla, por favor,
+		haznos llegar una autorización indicando nombre, apellidos y número de identificación (DNI o pasaporte)impresa que traer la persona autorizada</p>";
 		$mensaje .= "<br/><p>Muchas gracias, <br/> El equipo de taquillas</p>";
-		
+
 		mandarCorreos($numero,getCursoAnterior(),"[TAQUILLAS DAT] Cancelación de taquilla $numero",$mensaje);
-		
+
 		echo '<div data-role="content">';
 		echo '<div class="ui-body ui-body-c">
 			<p>Se ha enviado la solicitud de cancelación de la taquilla '.$numero.'</p>

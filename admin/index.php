@@ -4,16 +4,16 @@
 <?php require("./auth.php"); ?>
 <?php require("../params.php"); $params = new TaquillasParams(); ?>
 <?php define("_TAQUILLAS","true"); ?>
-<!DOCTYPE html> 
-<html> 
-	<head> 
-	<title>Admin Taquillas</title> 
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Admin Taquillas</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
 	<link rel="stylesheet" type="text/css" href="./jqm-docs.css" />
 	<link rel="stylesheet" media="print" href="../css/print.css" />
 	<link rel="stylesheet" media="screen" href="../css/screen.css" />
-	
+
 	<meta name="mobile-web-app-capable" content="yes">
 	<link rel="apple-touch-icon" href="../images/upm.gif">
 	<link rel="shorcut icon" type="image/gif" href="../images/upm.gif">
@@ -26,7 +26,7 @@
 	<style>
 	.containing-element .ui-slider-switch { width: 10em }
 	</style>
-</head> 
+</head>
 <body>
 <div data-role="page" class="type-interior">
 	<?php admin_header(); ?>
@@ -47,24 +47,24 @@ function admin_info_taquilla(){
 		$curso = intval($_GET['curso']);
 		$datos = get_info_taquilla($taquilla,$curso);
 		$alquilada =  $datos['operacion'] ? "Si" : "No";
-		$pagada =  $datos['pagada'] ? "Si" : "No"; 
-		
+		$pagada =  $datos['pagada'] ? "Si" : "No";
+
 		$tipoHeader = ($datos['tipo'] != "") ? "(".$datos['tipo'].")" : "";
 		admin_content_header("Taquilla $taquilla $tipoHeader");
-		
+
 		echo "<p><strong>Taquilla Alquilada: </strong>$alquilada</p>";
 		echo "<p><strong>Taquilla pagada: </strong> $pagada</p>";
 		echo "<p><strong>Zona: </strong>".getNombreZona($datos['zona'])."</p>";
 		echo ($datos['tipo'] == "cambio") ? "<p><strong>Taquilla antigua: </strong> ".getCambioOrigen($datos['operacion'])."</p>" : "";
-		
+
 		// Solo muestra arrendatarios si se encuentra alquilada
 		if($datos['operacion']):
-		
-		
-		
+
+
+
 		admin_content_header("Arrendatarios");
 		$personas = getArrendatarios($taquilla,$curso);
-		
+
 		echo '<br /><ul data-role="listview" data-inset="true">';
 		foreach ($personas as $persona){
 			echo "<li><h3>".get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos'])."</h3>";
@@ -76,14 +76,14 @@ function admin_info_taquilla(){
 		}
 		echo '</ul>';
 		echo '<form name="mandarcorreo" method="post" action="index.php?pag=mandaremail&taquilla='.$taquilla.'&curso='.$curso.'"><input type="submit" name="realizar" value="Escribir un email" /></form>';
-		
+
 		endif;
-		
+
 		admin_content_header("Operaciones realizadas");
-		
+
 		$operaciones = getOperaciones($taquilla);
-		
-		
+
+
 		echo '<br /><ul data-role="listview" data-inset="true">';
 		foreach ($operaciones as $operacion){
 			echo "<li><a href=\"index.php?pag=infoop&operacion=".$operacion['id']."\"><h3>Numero: ".$operacion['id']."</h3>";
@@ -92,9 +92,9 @@ function admin_info_taquilla(){
 			echo "</a></li>";
 		}
 		echo '</ul>';
-		
-		
-		
+
+
+
 		admin_content_header("Comentarios");
 		echo '<form method="post" name="comentarios" action="index.php?pag=infotaquilla&taquilla='.$taquilla.'&curso='.$curso.'">';
 		echo '<textarea name="comentario" id="comentario" placeholder="Escribe un comentario" /></textarea>';
@@ -105,11 +105,11 @@ function admin_info_taquilla(){
 			<input data-icon="check" type="submit" name="submitcomentario" value="Insertar" />';
 		echo '	';
 		echo '</form>';
-		
+
 		$comentarios = getComentarios($taquilla,$curso);
-		
+
 		if($comentarios){
-		
+
 			echo '<br /><ul data-role="listview" data-inset="true">';
 			foreach ($comentarios as $comentario){
 				echo "<li>";
@@ -118,10 +118,10 @@ function admin_info_taquilla(){
 			}
 			echo '</ul>';
 		}
-		
-		
+
+
 		if($debug) var_dump($datos);
-	
+
 	}else{
 		$cursos = get_cursos();
 		echo '<form name="vertaquilla" action="index.php?pag=infotaquila" method="get">
@@ -131,7 +131,7 @@ function admin_info_taquilla(){
 			</div>
 			<div data-role="fieldcontain">
 				<label for="curso">Curso académico</label>
-				<select name="curso">';				
+				<select name="curso">';
 				foreach($cursos as $curso):
 					echo '<option>'.$curso.'</option>';
 				endforeach;
@@ -144,17 +144,17 @@ function admin_info_taquilla(){
 
 function admin_info_operacion(){
 	if(isset($_GET['operacion'])) $operacion = intval($_GET['operacion']); else $operacion = false;
-	if($operacion){	
-		
+	if($operacion){
+
 		if(isset($_POST['realizar']))
-			$setTarea = setTareaRealizada($operacion, 1);		
-		
-		if(isset($_POST['pendiente']))		
+			$setTarea = setTareaRealizada($operacion, 1);
+
+		if(isset($_POST['pendiente']))
 			$setTarea = setTareaRealizada($operacion, 0);
 
-		$datos = get_info_operacion($operacion);		
+		$datos = get_info_operacion($operacion);
 		$personas = getArrendatarios($datos['taquilla'],$datos['curso']);
-		
+
 		if($setTarea){
 			if(isset($_POST['realizar'])){
 				$asunto = ($datos['tipo'] == "cambio") ? "Tu cambio de taquilla se ha realizado" : "Tu nueva taquilla está lista";
@@ -167,21 +167,21 @@ function admin_info_operacion(){
 				mandarCorreos($datos['taquilla'],$datos['curso'],$asunto,$mensaje);
 			}
 		}
-		
+
 		$alquilada =  $datos['operacion'] ? "Si" : "No";
-		$pagada =  $datos['pagado'] ? "Si" : "No"; 
-		
+		$pagada =  $datos['pagado'] ? "Si" : "No";
+
 		admin_content_header("Operación $operacion");
-		
+
 		echo "<p><strong>Operación pagada: </strong> $pagada</p>";
 		echo "<p><strong>Curso: </strong> ".$datos['curso']."</p>";
 		echo "<p><strong>Taquilla: </strong> <a href=\"index.php?pag=infotaquila&taquilla=".$datos['taquilla']."&curso=".$datos['curso']."\">".$datos['taquilla']."</a></p>";
 		echo "<p><strong>Timestamp: </strong> ".$datos['timestamp']."</p>";
 		echo "<p><strong>txn_id: </strong> ".$datos['txn_id']."</p>";
 		echo "<p><strong>Tipo: </strong> ".$datos['tipo']."</p>";
-		
+
 		admin_content_header("Arrendatarios");
-		
+
 		echo '<br /><ul data-role="listview" data-inset="true">';
 		foreach ($personas as $persona){
 			echo "<li><h3>".get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos'])."</h3>";
@@ -192,12 +192,12 @@ function admin_info_operacion(){
 		}
 		echo '</ul>';
 		echo '<form name="mandarcorreo" method="post" action="index.php?pag=mandaremail&taquilla='.$datos['taquilla'].'&curso='.$datos['curso'].'"><input type="submit" name="realizar" value="Escribir un email" /></form>';
-		
-		
+
+
 		if( ($datos['tipo'] == "cambio" || $datos['tipo'] == "nueva")):
-		
+
 		admin_content_header("Tarea a realizar");
-		
+
 		if ($datos['tipo'] == "cambio"){
 				aviso('<ol><li> Vaciar y quitar la cerradura de la taquilla <b>'.getCambioOrigen($datos['id']).'</b>, la antigua.</li>
 				<li>Poner esa cerradura en la taquilla <b>'.$datos['taquilla'].'</b>, la nueva,  y vaciarla si fuera necesario.</li>
@@ -215,38 +215,38 @@ function admin_info_operacion(){
 			aviso("La tarea ya ha sido realizada");
 			echo '<form name="realizar" method="post" action="index.php?pag=infoop&operacion='.$datos['id'].'"><input type="submit" name="pendiente" value="Volver a tarea pendiente" /></form>';
 		}
-			
-		
+
+
 		endif;
-		
+
 		if($debug) var_dump($datos);
-	
+
 	}else{
-		
+
 		echo '<form name="vertaquilla" action="index.php?pag=infoop" method="get">
 			<div data-role="fieldcontain">
 				<label for="operacion">Número de operación</label>
 				<input type="number" name="operacion" id="operacion" placeholder="Número de operación"/>
 			</div>
-			
+
 			<input type="submit" name="comprobar" id="comprobar" value="Ver operación" />
 			</form>';
 	}
 }
 
 function admin_info_taquillas_alquiladas(){
-	
-	
-	
+
+
+
 	if(isset($_GET['curso'])) $curso = intval($_GET['curso']); else $curso = false;
 	if($curso){
-	
+
 		$zona = (isset($_GET['zona'])) ? intval($_GET['zona']) : false;
 		$taquillas = get_taquillas_alquiladas($curso, $zona);
-		
+
 		admin_content_header("Alquiladas $curso", count($taquillas));
-				
-		
+
+
 		echo '<br /><ul data-role="listview" data-filter="true" data-inset="true">';
 		foreach ($taquillas as $taquilla){
 			$personas = getArrendatarios($taquilla['taquilla'],$curso);
@@ -256,7 +256,7 @@ function admin_info_taquillas_alquiladas(){
 			echo "<p><b>Estado</b> ".$estado."</p>";
 			echo "<p><strong>Zona: </strong>".getNombreZona($taquilla['zona'])."</p>";
 			//echo "<p><b>Pagada</b> ".$taquilla['pagado']."</p>";
-			
+
 			echo "<p><b>Arrendatarios:</b> ";
 			foreach ($personas as $persona){
 				echo get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos']).", ";
@@ -265,17 +265,17 @@ function admin_info_taquillas_alquiladas(){
 			echo "</a></li>";
 		}
 		echo '</ul>';
-		
 
-		
-		
+
+
+
 	}else{
 		$cursos = get_cursos();
 
 		echo '<form name="vertaquilla" action="index.php?pag=infoalquiladas" method="get">
 			<div data-role="fieldcontain">
 				<label for="curso">Curso académico</label>
-				<select name="curso">';				
+				<select name="curso">';
 				foreach($cursos as $curso):
 					echo '<option>'.$curso.'</option>';
 				endforeach;
@@ -284,21 +284,21 @@ function admin_info_taquillas_alquiladas(){
 			</form>';
 	}
 
-	
+
 }
 
 function admin_info_taquillas_norenovadas(){
-	
-	
-	
+
+
+
 	if(isset($_GET['curso'])) $curso = intval($_GET['curso']); else $curso = false;
 	if($curso){
-	
+
 		$zona = (isset($_GET['zona'])) ? intval($_GET['zona']) : false;
 		$taquillas = get_taquillas_no_renovadas($curso, $zona);
-		
-				
-		admin_content_header("No renovadas $curso",count($taquillas));				
+
+
+		admin_content_header("No renovadas $curso",count($taquillas));
 		echo "<p>Son las taquillas que hay que vaciar</p>";
 		echo '<br /><ul data-role="listview" data-filter="true" data-inset="true">';
 		foreach ($taquillas as $taquilla){
@@ -307,21 +307,21 @@ function admin_info_taquillas_norenovadas(){
 			echo "<li><a href=\"index.php?pag=infotaquila&taquilla=".$taquilla['taquilla']."&curso=$curso\"><h3>Número ".$taquilla['taquilla']."</h3>";
 			echo "<p><b>Razón</b> ".getRazonNoRenovada($taquilla['numero'],$curso)."</p>";
 			echo "<p><strong>Zona: </strong>".getNombreZona($taquilla['zona'])."</p>";
-			
+
 			echo "</a></li>";
 		}
 		echo '</ul>';
-		
 
-		
-		
+
+
+
 	}else{
 		$cursos = get_cursos();
 
 		echo '<form name="vertaquilla" action="index.php?pag=infonorenovadas" method="get">
 			<div data-role="fieldcontain">
 				<label for="curso">Curso académico</label>
-				<select name="curso">';				
+				<select name="curso">';
 				foreach($cursos as $curso):
 					echo '<option>'.$curso.'</option>';
 				endforeach;
@@ -330,12 +330,12 @@ function admin_info_taquillas_norenovadas(){
 			</form>';
 	}
 
-	
+
 }
 
 function admin_info_tareas(){
 		admin_content_header("Nuevas y cambios");
-		$tareas = getTareasPendientes();		
+		$tareas = getTareasPendientes();
 		echo '<br /><ul data-role="listview" data-filter="true" data-inset="true">';
 		foreach ($tareas as $tarea){
 			$estado = ($tarea['pagado'] == 1) ? "<font color=\"darkgreen\"><b>Pagada</b></font>" : "<font color=\"red\">Sin pagar</font>";
@@ -345,7 +345,7 @@ function admin_info_tareas(){
 			$personas = getArrendatarios($tarea['taquilla'],$tarea['curso']);
 			echo "<b>Arrendatarios: </b>";
 			foreach ($personas as $persona){
-				echo get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos']).", ";			
+				echo get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos']).", ";
 			}
 			echo "<br/>";
 			echo "<b>Estado</b> ".$estado."<br/>";
@@ -357,7 +357,7 @@ function admin_info_tareas(){
 			echo '<p>La taquilla destino está ';
 			echo (isTaquillaVacia($tarea['taquilla'],getCursoAnterior())) ? '<b><font color="darkgreen">libre</font></b>' : 'posiblemente <b><font color="red"> ocupada</font></b>';
 			echo '</p>';
-			
+
 			echo '</a></li>';
 		}
 		echo '</ul>';
@@ -371,20 +371,20 @@ function admin_info_cancelaciones(){
 		echo "<br />";
 		echo '<ul data-role="listview" data-filter="true" data-inset="true">';
 		foreach ($cancelaciones as $cancelacion){
-			
+
 			$personas = getArrendatarios($cancelacion['taquilla'],$cancelacion['curso']-1);
-			
+
 			echo '<li><a href="index.php?pag=infocancelacion&cancelacion='.$cancelacion['id'].'" >';
 			echo '<h3>Taquilla '.$cancelacion['taquilla'] .'</h3>';
 
 			echo "<p><b>Autorizados: </b>";
 			foreach ($personas as $persona){
-				echo get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos']).", ";			
+				echo get_utf8($persona['nombre'])." ".get_utf8($persona['apellidos']).", ";
 			}
 			echo "</p>";
 			echo "<p><b>Fianza devuelta: </b>";
 			echo ($cancelacion['fianza_devuelta'] == 1) ? "Si" : "No";
-			
+
 			echo '</p></a></li>';
 		}
 		echo '</ul>';
@@ -394,8 +394,8 @@ function admin_info_cancelaciones(){
 function admin_info_cancelacion(){
 	global $params;
 	if(isset($_GET['cancelacion'])) $cancelacion = intval($_GET['cancelacion']); else $cancelacion = false;
-	if($cancelacion){	
-		
+	if($cancelacion){
+
 		if(isset($_POST['devolver'])){
 			if(trim($_POST['quien']) == "")
 				aviso("El campo de quién recoge la fianza no puede estar vacío");
@@ -404,22 +404,22 @@ function admin_info_cancelacion(){
 					$setTarea = setFianzaDevuelta($cancelacion, $_POST['quien']);
 			}
 		}
-		
 
 
-		$datos = getCancelacion($cancelacion);		
+
+		$datos = getCancelacion($cancelacion);
 		$personas = getArrendatarios($datos['taquilla'],$datos['curso']-1);
-		
+
 		if($setTarea){
 			$asunto = "Devolución de la fianza";
 			$mensaje = "<p>Hola,</p><p>Te comunicamos que se acaba de devolver a <b>".$_POST['quien']."</b> la fianza de tu taquilla ".$datos['taquilla'].".<br/> Si se trata de un error ponte en contacto con nosotros inmediatamente.</p><p>El equipo de taquilla</p>";
 			mandarCorreos($datos['taquilla'],$datos['curso']-1,$asunto,$mensaje);
 		}
-	
+
 		admin_content_header("Cancelación de taquilla ".$datos['taquilla']);
-		
+
 		aviso("La fianza de <b>9 Euros</b> será devuelta en persona, siempre y cuando la taquilla se encuentre en buen estado y tendrá que <b>devolver al menos 1 llave</b>");
-		
+
 		echo '<div class="noprint">';
 		admin_content_header("Instrucciones para devolver fianza");
 		aviso("<ol>
@@ -427,11 +427,11 @@ function admin_info_cancelacion(){
 		<li>Escribir su nombre en el recuadro de abajo y pulsar devolver fianza</li>
 		<li>Imprimir esta página, que tiene que firmar la persona que recoge</li>
 		<li>Finalmente, devovler el dinero</li></ol>");
-		
+
 		echo '</div>';
-		
+
 		admin_content_header("Autorizados");
-		
+
 		echo '<p>Esta personas están autorizadas a recoger la fianza</p>';
 		echo '<ul data-role="listview" data-inset="true">';
 		foreach ($personas as $persona){
@@ -460,25 +460,25 @@ function admin_info_cancelacion(){
 				setlocale(LC_ALL,"es_ES");
 				$fecha = date('l \d\í\a j \d\e F \d\e Y \a \l\a\s G:i',$datos['hora_recogida']);
 				aviso("La fianza de 9 Euros la recogió <b>".$datos['quien_recoge']."</b> el $fecha");
-				
+
 				echo '<div class="noscreen">';
 				aviso("Firmado: <br/><br/>");
 				echo '</div>';
 			}
 		}
-			
-		
-		
+
+
+
 		if($debug) var_dump($datos);
-	
+
 	}else{
-		
+
 		echo '<form name="vertaquilla" action="index.php?pag=infoop" method="get">
 			<div data-role="fieldcontain">
 				<label for="operacion">Número de operación</label>
 				<input type="number" name="operacion" id="operacion" placeholder="Número de operación"/>
 			</div>
-			
+
 			<input type="submit" name="comprobar" id="comprobar" value="Ver operación" />
 			</form>';
 	}
@@ -490,18 +490,18 @@ function admin_mandar_email(){
 	if($_POST['comprobar'] && isset($_POST['taquilla']) ){
 		$curso = intval($_POST['curso']);
 		$asunto = $_POST['asunto'];
-		$taquilla = intval($_POST['taquilla']);	
-		$mensaje .= $_POST['mensaje'];	
-	
+		$taquilla = intval($_POST['taquilla']);
+		$mensaje .= $_POST['mensaje'];
+
 		$estado = mandarCorreos($taquilla,$curso,$asunto,$mensaje,true);
-	
-		echo ($estado) ? "<p>Correo enviado correctamente</p>" : "<p>Fallo al mandar correo</p>";		
-		
-	
+
+		echo ($estado) ? "<p>Correo enviado correctamente</p>" : "<p>Fallo al mandar correo</p>";
+
+
 	}else{
-		if(isset($_GET['taquilla'])) $taquilla = intval($_GET['taquilla']);	
+		if(isset($_GET['taquilla'])) $taquilla = intval($_GET['taquilla']);
 		if($taquilla != 0) $value = 'value="'.$taquilla.'"';
-		if(isset($_GET['curso'])) $cur = intval($_GET['curso']);	
+		if(isset($_GET['curso'])) $cur = intval($_GET['curso']);
 		$cursos = get_cursos();
 		echo '<form name="vertaquilla" action="index.php?pag=mandaremail" method="post">
 			<div data-role="fieldcontain">
@@ -510,7 +510,7 @@ function admin_mandar_email(){
 			</div>
 			<div data-role="fieldcontain">
 				<label for="curso">Curso académico</label>
-				<select name="curso">';				
+				<select name="curso">';
 				foreach($cursos as $curso):
 					if($curso == $cur) $selected = 'selected="selected"'; else $selected = "";
 					echo '<option '.$selected.'>'.$curso.'</option>';
@@ -536,24 +536,24 @@ if(isset($_POST['tipo'])) $tipo = $_POST['tipo']; else $taquilla = false;
 	if($tipo){
 	$curso = intval($_POST['curso']);
 	$asunto = $_POST['asunto'];
-	
+
 	$mensaje .= $_POST['mensaje'];
 
-	
+
 	$estado = emailMasivo($tipo,$curso,$asunto,$mensaje);
-	
-	echo ($estado) ? "<p>Correo enviado correctamente</p>" : "<p>Fallo al mandar correo</p>";		
-		
-	
+
+	echo ($estado) ? "<p>Correo enviado correctamente</p>" : "<p>Fallo al mandar correo</p>";
+
+
 	}else{
 		$cursos = get_cursos();
 		if(!in_array(getCursoActual(),$cursos))
 			$cursos[] = getCursoActual();
-			
+
 		echo '<form name="vertaquilla" action="index.php?pag=emailmasivo" method="post">
 			<div data-role="fieldcontain">
 				<label for="tipo">Tipo de taquillas</label>
-				<select name="tipo">';				
+				<select name="tipo">';
 				echo '<option value="renovadas">Alquiladas</option>';
 				echo '<option value="norenovadas">No renovadas</option>';
 				echo '<option value="canceladas">Canceladas</option>';
@@ -561,7 +561,7 @@ if(isset($_POST['tipo'])) $tipo = $_POST['tipo']; else $taquilla = false;
 			echo '</select></div>
 			<div data-role="fieldcontain">
 				<label for="curso">Curso académico</label>
-				<select name="curso">';				
+				<select name="curso">';
 				foreach($cursos as $curso):
 					echo '<option>'.$curso.'</option>';
 				endforeach;
@@ -599,23 +599,23 @@ function admin_pagar_operacion(){
 		}else{
 			aviso("<font color=\"red\"><b>Error: </b></font>La operación <b>$operacion</b> ya estaba pagada</p>");
 		}
-	
+
 	}else{
-		
+
 		echo '<form name="vertaquilla" action="index.php?pag=pagaroperacion" method="get">
 			<p>Introducir número de taquilla para establecer como pagada este curso</p>
 			<div data-role="fieldcontain">
 				<label for="operacion">Número de taquilla</label>
 				<input type="number" name="taquilla" id="taquilla" placeholder="Número de taquilla"/>
 			</div>
-			
+
 			<input type="submit" name="comprobar" id="comprobar" value="Pagar taquilla" />
 			</form>';
 	}
 }
 
 function admin_content_header($titulo, $count = 0){
-	
+
 	$bubble = ($count > 0) ? '<span class="ui-li-count ui-btn-up-c ui-btn-corner-all">'.$count.'</span>' : "";
 	echo '<div data-role="header" data-theme="b" class="ui-header ui-bar-b" role="banner" >
 				<h1 class="ui-title printcontrast" role="heading" aria-level="1">'.$bubble." ".$titulo.'</h1>
@@ -641,7 +641,7 @@ function admin_content(){
 
 function admin_content_primary(){
 	echo '<div class="content-primary">';
-	
+
 	switch($_GET['pag']){
 		case "infotaquilla":
 			admin_info_taquilla();

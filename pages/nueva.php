@@ -18,7 +18,7 @@
 include("bbdd.php");
 if(!defined("_TAQUILLAS"))
 	die("No direct access allowed");
-	
+
 require_once("params.php");
 $params = new TaquillasParams();
 
@@ -27,7 +27,7 @@ if($params->nuevas == false) die("Esta acción no está disponible");
 $paso = intval($_POST['paso']);
 
 /**
-/* Manejador de parámetros para ver en que estado de la renovación vamos 
+/* Manejador de parámetros para ver en que estado de la renovación vamos
  */
 if($paso == 0)
 	seleccionar_taquilla();
@@ -43,23 +43,23 @@ else if($paso == 6)
 	nueva_ingreso($_POST['taquilla'],$_POST['personasId']);
 else
 	renovacion_paso1();
-	
-	
-	
-	
+
+
+
+
 /**
 /* Paso uno: Formulario para introducir número de taquilla a renovar
  */
- 
+
 function seleccionar_taquilla(){
 
 	$taquillas = get_taquillas_alquilables(getCursoActual());
-	
+
 	$zonas = getZonas();
 
 	echo '<div data-role="content">';
 	echo '<div class="ui-body ui-body-e">
-				<p>A continuación se muestran las taquillas aún disponibles. 
+				<p>A continuación se muestran las taquillas aún disponibles.
 				Una vez seleccionada dispondrá de 30 minutos para terminar la reserva durante el cual se le reservará el número de taquilla</p>
 			</div>';
 	echo '<form action="index.php?pag=nueva" method="post">';
@@ -72,13 +72,13 @@ function seleccionar_taquilla(){
 		$taquillas = get_taquillas_alquilables(getCursoActual(),$zona);
 		foreach($taquillas as $taquilla){
 			echo '<option value="'.$taquilla['numero'].'">'.$taquilla['numero'].'</option>';
-		}	
+		}
 	}
 	echo '</select>';
 	echo '	</div>
 			<input type="hidden" name="paso" id="paso" value="2" />
 			<div><input type="submit" name="comprobar" id="comprobar" value="Continuar" /></div>
-			
+
 		</form>
 	</div><!-- /content -->';
 }
@@ -108,15 +108,15 @@ function formulario_arrendatarios($taquilla){
 		echo '</div>';
 		echo '<div data-role="fieldcontain">';
 		echo '<label for="dni'.$i.'">Dni (sólo números)</label><input type="number" name="dni'.$i.'" id="dni'.$i.'" /> ';
-		echo '</div>';  
+		echo '</div>';
 		echo '<div data-role="fieldcontain">';
 		echo '<label for="email'.$i.'">Email</label><input type="email" name="email'.$i.'" id="email'.$i.'" /> ';
-		echo '</div>';  
+		echo '</div>';
 		echo '<div data-role="fieldcontain">';
 		echo '<label for="telefono'.$i.'">Telefono</label><input type="number" name="telefono'.$i.'" id="telefono'.$i.'" /> ';
-		echo '</div>';  
+		echo '</div>';
 	echo '</div>';
-		  
+
 	}
 	echo '<div class="ui-body ui-body-e">
 				<p>Pulsa el <strong>botón continuar</strong> para llegar al siguiente paso</p>
@@ -124,7 +124,7 @@ function formulario_arrendatarios($taquilla){
 	echo '	<input type="hidden" name="paso" id="paso" value="3" />
 			<input type="hidden" name="taquilla" id="taquilla" value="'.$taquilla.'" />
 			<div><input type="submit" name="comprobar" id="comprobar" value="Continuar" /></div>
-			
+
 		</form>
 	</div><!-- /content -->';
 }
@@ -132,7 +132,7 @@ function formulario_arrendatarios($taquilla){
 /**
 /* Paso tres: Comprobar datos de arrendatarios
  */
- 
+
 function comprobar_datos($post){
 	$personas = array();
 	$errmsg = "";
@@ -146,10 +146,10 @@ function comprobar_datos($post){
 			$personas[$i-1]['email'] = $post["email$i"];
 			$personas[$i-1]['telefono'] = $post["telefono$i"];
 		}
-	}	
+	}
 	if(count($personas[0]) == 0)
 		$errmsg .= "Debes de introducir al menos los datos completos de 1 persona<br/>";
-		
+
 	if(trim($errmsg) == ""){
 		echo '<h2>¿Son estos datos correctos?</h2>';
 		echo '<ul data-role="listview" data-inset="true">';
@@ -161,7 +161,7 @@ function comprobar_datos($post){
 			echo "</li>";
 		}
 		echo '</ul>';
-		
+
 		$spersonas = base64_encode(json_encode($personas));
 		echo '<form name="siguiente" action="index.php?pag=nueva" method="post">';
 		echo '<input type="hidden" name="personas" value="'.$spersonas.'" id="personas" />';
@@ -174,9 +174,9 @@ function comprobar_datos($post){
 	    </fieldset>
 		</div>';
 		echo '</form>';
-	
-	}	
-	
+
+	}
+
 }
 
 /**
@@ -188,28 +188,28 @@ function comprobar_datos($post){
 function muestraPago($taquilla, $spersonas){
 	require_once("params.php");
 	$params = new TaquillasParams();
-	
+
 	$importe = $params->precioNueva;
-	
+
 	$personasId = insert_json_personas($spersonas,$taquilla);
-	
-	
+
+
 	//$personas = json_decode(base64_decode($spersonas));
 
-	
-	echo '<div data-role="content">	
+
+	echo '<div data-role="content">
 	<h1>Importe: '.$importe.' EUR</h1>
 	<h3>6.5 EUR de alquiler + 2.5 EUR cerradura + 9 EUR fianza*</h3>
 	<p>*La fianza se devolverá al cancelar la taquilla el año que ya no quiera usarse</p>
-	
+
 	<form action="index.php?pag=nueva" method="post">
 		<fieldset data-role="controlgroup">
 	<legend>Seleccionar forma de pago:</legend>
      	<input type="radio" name="formapago" id="online" value="online" checked="checked" />
      	<label for="online">On-line</label>
-		
+
      	<input type="radio" name="formapago" id="ingreso" value="ingreso"  />
-     	<label for="ingreso">Ingreso bancario</label>    	
+     	<label for="ingreso">Ingreso bancario</label>
 	</fieldset>
 	<input type="hidden" name="paso" id="paso" value="5" />
 
@@ -231,21 +231,21 @@ function muestraPago($taquilla, $spersonas){
 
 function nueva_pagar($numero,$personasId,$online){
 	require_once("params.php");
-	
+
 	$params = new TaquillasParams();
-	
+
 	if($online == "online")
 		$online = true;
 	else
 		$online = false;
-		
+
 	if($online){
 		require_once("logos.php");
 		aviso("Ahora vas a visitar el sitio de Paypal, donde puedes pagar con tu <b>cuenta de paypal</b> o con tu <b>tarjeta de crédito</b>. <br/> No es necesario que tengas cuenta de paypal, simpemente pulsa en \"¿No dispone de una cuenta paypal?\".");
 		paypal_logo();
 		echo '
 		<div data-role="content">
-		<form name="_xclick" action="'.$params->paypalUrl.'" 
+		<form name="_xclick" action="'.$params->paypalUrl.'"
     method="post">
     <input type="hidden" name="cmd" value="_xclick">
     <input type="hidden" name="business" value="'.$params->paypalReceiverEmail.'">
@@ -253,10 +253,10 @@ function nueva_pagar($numero,$personasId,$online){
     <input type="hidden" name="item_name" value="Nueva">
 	<input type="hidden" name="item_number" value="'.$numero.'">
     <input type="hidden" name="amount" value="'.$params->precioPaypalNueva.'">
-    <input type="hidden" name="return" value="http://canival.dat.etsit.upm.es/~pmoncada/taquillas/paypal/ok.php">
-    <input type="hidden" name="notify_url" value="http://canival.dat.etsit.upm.es/~pmoncada/taquillas/paypal/paypal.php?type=nueva&personasId='.$personasId.'">
+    <input type="hidden" name="return" value="https://dat.etsit.upm.es/taquillasapp/paypal/ok.php">
+    <input type="hidden" name="notify_url" value="https://dat.etsit.upm.es/taquillasapp/paypal/paypal.php?type=nueva&personasId='.$personasId.'">
     <input type="submit" value="Pagar ahora con PayPal"  border="0" name="submit" alt="Make payments with PayPal">
-</form></div>';	
+</form></div>';
 	aviso("Imagen de muestra del sitio de Paypal");
 	echo '<center><img src="images/paypal.png" /></center>';
 	}else{
@@ -264,7 +264,7 @@ function nueva_pagar($numero,$personasId,$online){
 			<div data-role="header" data-theme="e" class="ui-header ui-bar-e" role="banner">
 				<h1 class="ui-title" role="heading" aria-level="1">Indicaciones para pago con ingreso en cuenta bancaria</h1>
 			</div>
-			
+
 			<div class="ui-body ui-body-e">
 				<ul>
 					<li>Se ha de hacer un ingreso en la cuenta '.$params->cco.'</li>
@@ -276,8 +276,8 @@ function nueva_pagar($numero,$personasId,$online){
 			</div>
 
 		</div>';
-		
-	
+
+
 	}
 
 }
@@ -287,25 +287,25 @@ function nueva_ingreso($taquilla,$personasId){
 	$personasId = intval($personasId);
 	require_once("params.php");
 	$params = new TaquillasParams();
-	
+
 	if(nuevaIngreso($taquilla,$personasId)){
 		$operacion = getOperacion($taquilla,getCursoActual());
 		$mensaje = $params->instruccionesIngreso."<h2>Importe a ingresar: ".$params->precioNueva." EUR</h2>
 		<h2>Número de operación: $operacion</h2><h2>Número de taquilla (indicar en el ingreso): $taquilla</h2>";
-		
+
 		mandarCorreos($taquilla,getCursoActual(),"[TAQUILLAS DAT] Reserva de alquiler de taquilla $taquilla",$mensaje);
 		echo '<div data-role="content">
 			<div data-role="header" data-theme="b" class="ui-header ui-bar-b" role="banner">
 				<h1 class="ui-title" role="heading" aria-level="1">Reserva realizada</h1>
 			</div>
-			
+
 			<div class="ui-body ui-body-d">
 				<p>Tu reserva para la taquilla '.$taquilla.' ha quedado realizada</p>
 				<p>Para terminar el proceso de alquiler realiza el ingreso de acuerdo con las instrucciones que recibirás por email</p>
 			</div>
 
 		</div>';
-	
+
 	}else{
 		echo "Error, ponte en contacto con taquillas@dat.etsit.upm.es";
 	}

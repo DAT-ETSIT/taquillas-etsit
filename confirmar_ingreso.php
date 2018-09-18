@@ -41,7 +41,7 @@ function confirmar_renovacion($taquilla,$arrendatario){
 				<input type="hidden" name="paso" id="paso" value="6" />
 				<input type="submit" data-theme="b" value="Confirmar reserva" />
 			</form>
-			<a href="index.php" data-role="button" data-rel="back" data-theme="c">Cancel</a>    
+			<a href="index.php" data-role="button" data-rel="back" data-theme="c">Cancel</a>
 		</div>
 	</div>';
 
@@ -63,7 +63,7 @@ function confirmar_nueva($taquilla,$personasId){
 				<input type="hidden" name="paso" id="paso" value="6" />
 				<input type="submit" data-theme="b" value="Confirmar reserva" />
 			</form>
-			<a href="index.php" data-role="button" data-rel="back" data-theme="c">Cancel</a>    
+			<a href="index.php" data-role="button" data-rel="back" data-theme="c">Cancel</a>
 		</div>
 	</div>';
 
@@ -86,7 +86,7 @@ function confirmar_cambio($nueva,$antigua,$arrendatario){
 				<input type="hidden" name="paso" id="paso" value="8" />
 				<input type="submit" data-theme="b" value="Confirmar reserva" />
 			</form>
-			<a href="index.php" data-role="button" data-rel="back" data-theme="c">Cancel</a>    
+			<a href="index.php" data-role="button" data-rel="back" data-theme="c">Cancel</a>
 		</div>
 	</div>';
 
