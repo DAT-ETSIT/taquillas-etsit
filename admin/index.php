@@ -1,6 +1,7 @@
 <?php $debug = false; ?>
 <?php if($debug){ error_reporting(E_ALL); ini_set('display_errors', '1');} ?>
 <?php require("../taquillas.functions.php"); ?>
+<?php require("./auth.php"); ?>
 <?php require("../params.php"); $params = new TaquillasParams(); ?>
 <?php define("_TAQUILLAS","true"); ?>
 <!DOCTYPE html> 
