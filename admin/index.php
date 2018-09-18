@@ -9,7 +9,7 @@
 	<title>Admin Taquillas</title> 
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
-	<link rel="stylesheet" href="http://jquerymobile.com/demos/1.1.1/docs/_assets/css/jqm-docs.css" />
+	<link rel="stylesheet" type="text/css" href="./jqm-docs.css" />
 	<link rel="stylesheet" media="print" href="../css/print.css" />
 	<link rel="stylesheet" media="screen" href="../css/screen.css" />
 	
@@ -19,7 +19,7 @@
 	
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
-	<script src="http://jquerymobile.com/demos/1.1.1/docs/_assets/js/jqm-docs.js"></script>
+	<script src="./jqm-docs.js"></script>
 
 	<style>
 	.containing-element .ui-slider-switch { width: 10em }
