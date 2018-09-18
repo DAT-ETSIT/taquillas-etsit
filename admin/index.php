@@ -398,7 +398,7 @@ function admin_info_cancelacion(){
 			if(trim($_POST['quien']) == "")
 				aviso("El campo de quién recoge la fianza no puede estar vacío");
 			else{
-				if($params->tienePermisos($_SERVER['PHP_AUTH_USER']))
+				if($params->tienePermisos($_SERVER['REMOTE_USER']))
 					$setTarea = setFianzaDevuelta($cancelacion, $_POST['quien']);
 			}
 		}
@@ -440,11 +440,11 @@ function admin_info_cancelacion(){
 			echo "</li>";
 		}
 		echo '</ul>';
-		
-		if($params->tienePermisos($_SERVER['PHP_AUTH_USER'])){
+
+		if($params->tienePermisos($_SERVER['REMOTE_USER'])){
 			admin_content_header("Devolución de fianza");
-		
-		
+
+
 			if($datos['fianza_devuelta'] == 0){
 				echo '<form name="realizar" method="post" action="index.php?pag=infocancelacion&cancelacion='.$datos['id'].'">';
 				echo '<div data-role="fieldcontain">
@@ -581,13 +581,13 @@ if(isset($_POST['tipo'])) $tipo = $_POST['tipo']; else $taquilla = false;
 
 function admin_pagar_operacion(){
 	global $params;
-	if(!$params->tienePermisos($_SERVER['PHP_AUTH_USER']))
+	if(!$params->tienePermisos($_SERVER['REMOTE_USER']))
 		die('no tienes permisos');
 	if(isset($_GET['taquilla'])) $taquilla = intval($_GET['taquilla']); else $taquilla = false;
 	if($taquilla){
 		$curso = getCursoActual();
 		$operacion = getOperacion($taquilla,$curso);
-		
+
 		if(!isOperacionPagada($operacion)){
 			$pagar = pagarOperacion($operacion);
 			$asunto = "Hemos recibido tu ingreso";
@@ -694,13 +694,13 @@ function admin_content_secondary(){
 							<li><a href="index.php?pag=infoop">Información de una operación</a></li>
 							<li><a href="index.php?pag=infoalquiladas">Ver todas alquiladas</a></li>
 							<li><a href="index.php?pag=infonorenovadas">Ver no renovadas</a></li>
-							
+
 							<li data-role="list-divider">Tareas</li>
 							<li><a href="index.php?pag=infotareas">Nuevas y cambios<span class="ui-li-count ui-btn-up-c ui-btn-corner-all">'.countTareas().'</span></a></li>
 							<li><a href="index.php?pag=infocancelaciones">Cancelaciones<span class="ui-li-count ui-btn-up-c ui-btn-corner-all">'.countCancelaciones().'</span></a></li>
-							
+
 							<li data-role="list-divider">Operativa</li>';
-								if($params->tienePermisos($_SERVER['PHP_AUTH_USER']))
+								if($params->tienePermisos($_SERVER['REMOTE_USER']))
 									echo '<li><a href="index.php?pag=pagaroperacion">Pagar una taquilla</a></li>';
 							echo '<li><a href="index.php?pag=mandaremail">Mandar email</a></li>
 							<li><a href="index.php?pag=emailmasivo">Emails masivos</a></li>

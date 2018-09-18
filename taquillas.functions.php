@@ -775,7 +775,7 @@ function pagarOperacion($operacion){
 	$operacion = intval($operacion);
 	if(isOperacionPagada($operacion))
 		return false;
-	$admin = $_SERVER['PHP_AUTH_USER'];
+	$admin = $_SERVER['REMOTE_USER'];
 	
 	$query = "UPDATE operaciones SET pagado='1' WHERE id='$operacion'";	
 	$query2 = "INSERT INTO pagos_manuales (operacion,admin) VALUES ('$operacion','$admin')";
@@ -814,8 +814,7 @@ function getNombreZona($id){
 }
 
 function insertarComentario($taquilla,$curso,$comentario,$persistente){
-	
-	$admin = $_SERVER['PHP_AUTH_USER'];
+	$admin = $_SERVER['REMOTE_USER'];
 	if(trim($comentario) == "")
 		return false;
 	$persistente = intval($persistente);
