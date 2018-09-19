@@ -30,9 +30,9 @@ require("taquillas.functions.php");
 /* Page ROUTER */
 $page = $_GET['pag'];
 
-if(is_file("pages/$page.html")) 
+if(is_file("pages/$page.html")) // Trata de cargar la pagina.html
 	include("pages/$page.html");
-else if(is_file("pages/$page.php")) 
+else if(is_file("pages/$page.php")) // Si no existe html, pues .php
 	include("pages/$page.php");
 else
 	include("pages/principal.php");
