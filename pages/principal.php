@@ -22,7 +22,7 @@ $params = new TaquillasParams();
 <div data-role="content">
 
 	<ul data-role="listview" data-theme="d" data-divider-theme="d" class="ui-listview">
-		<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-d ui-li-has-count">Del 4 al 22 de septiembre<span class="ui-li-count ui-btn-up-c ui-btn-corner-all">2</span></li>
+		<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-d ui-li-has-count">Del 4 al 22 de septiembre<span class="ui-li-count ui-btn-up-c ui-btn-corner-all">1</span></li>
 		<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-d"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="index.php?pag=renovacion" class="ui-link-inherit"><p class="ui-li-aside ui-li-desc"><strong><?php echo ($params->renovaciones) ? "<b><font color=\"darkgreen\">ABIERTO</font></b>" : "<b><font color=\"red\">CERRADO</font></b>"; ?></strong></p>
 
 				<h3 class="ui-li-heading">Renovación de taquillas</h3>
@@ -32,7 +32,8 @@ $params = new TaquillasParams();
 
 
 		</a></div><span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></div></li>
-		
+
+		<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-d ui-li-has-count">Permanente<span class="ui-li-count ui-btn-up-c ui-btn-corner-all">1</span></li>
 		<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-d"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="index.php?pag=cancelacion" class="ui-link-inherit"><p class="ui-li-aside ui-li-desc"><strong><?php echo ($params->cancelaciones) ? "<b><font color=\"darkgreen\">ABIERTO</font></b>" : "<b><font color=\"red\">CERRADO</font></b>"; ?></strong></p>
 				<h3 class="ui-li-heading">Cancelación de taquillas</h3>
 				<p class="ui-li-desc"><strong>Haz click aquí para cancelar tu taquilla</strong></p>

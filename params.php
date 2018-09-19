@@ -17,7 +17,7 @@ class TaquillasParams{
 
 	//No permitir varias acciones al mismo tiempo
 	var $renovaciones = true;
-	var $cancelaciones = false;
+	var $cancelaciones = true;
 	var $cambios = true;
 	var $nuevas = true;
 	
